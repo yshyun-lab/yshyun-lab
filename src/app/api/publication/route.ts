@@ -1,7 +1,15 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/app/api/prisma';
+import { demoStore, isDemoMode } from '@/lib/admin-demo-store';
 
 export async function GET(request: Request) {
+  if (isDemoMode()) {
+    return NextResponse.json({
+      preprints: demoStore.publication.filter((item) => Number(item.type) === 0),
+      publications: demoStore.publication.filter((item) => Number(item.type) === 1),
+      demo: true,
+    });
+  }
   const { searchParams } = new URL(request.url);
   const limitParam = searchParams.get('limit');
   let limit: number | undefined;

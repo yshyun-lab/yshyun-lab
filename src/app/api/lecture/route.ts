@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/app/api/prisma';
+import { demoStore, isDemoMode } from '@/lib/admin-demo-store';
 
 interface GroupedLecture {
   uid: number;
@@ -10,6 +11,7 @@ interface GroupedLecture {
 }
 
 export async function GET() {
+  if (isDemoMode()) return NextResponse.json({ data: demoStore.lecture, demo: true });
   const data = await prisma.lecture.findMany({
     select: {
       uid: true,

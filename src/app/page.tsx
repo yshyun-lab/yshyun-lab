@@ -27,13 +27,18 @@ const Area = ({
 );
 
 export default async function Home() {
-  const { publications } = await api<{
+  const publicationRequest = api<{
     publications: TPublication[];
-  }>({ url: 'publication?limit=4' });
+  }>({ url: 'publication?limit=4' }).catch(() => ({ publications: [] }));
 
-  const { data: news } = await api<{
+  const newsRequest = api<{
     data: TNews[];
-  }>({ url: 'board/news?limit=4' });
+  }>({ url: 'board/news?limit=4' }).catch(() => ({ data: [] }));
+
+  const [{ publications }, { data: news }] = await Promise.all([
+    publicationRequest,
+    newsRequest,
+  ]);
 
   const maxLength = Math.min(publications.length, news.length, 3) + 1;
 

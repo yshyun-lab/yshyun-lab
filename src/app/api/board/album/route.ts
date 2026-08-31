@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/app/api/prisma';
+import { isDemoMode } from '@/lib/admin-demo-store';
 
 export async function GET() {
+  if (isDemoMode()) return NextResponse.json({ data: [], demo: true });
   const data = await prisma.board.findMany({
     select: {
       uid: true,

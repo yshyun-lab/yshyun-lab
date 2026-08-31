@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { Readable } from 'stream';
 import { prisma } from '@/app/api/prisma';
+import { isAdminRequest } from '@/lib/admin-auth';
 
 export const config = {
   api: { bodyParser: false },
@@ -28,6 +29,9 @@ async function convertNextRequestToNodeRequest(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  if (!(await isAdminRequest())) {
+    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 });
+  }
   try {
     const nodeReq = await convertNextRequestToNodeRequest(request);
 
@@ -60,6 +64,9 @@ export async function POST(request: NextRequest) {
   }
 }
 export async function DELETE(request: NextRequest) {
+  if (!(await isAdminRequest())) {
+    return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 });
+  }
   try {
     const body = await request.json();
     const { fileUrl } = body;

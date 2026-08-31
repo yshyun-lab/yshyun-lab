@@ -3,7 +3,7 @@ import { APIError } from './error';
 import { APIParams } from './types';
 
 const instance = ky.create({
-  prefixUrl: `${process.env.NEXT_PUBLIC_API_URL}/api`,
+  prefixUrl: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api`,
 });
 
 /**
